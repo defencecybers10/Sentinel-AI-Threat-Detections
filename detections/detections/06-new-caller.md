@@ -6,6 +6,7 @@ and 3 compare a caller to its own past behaviour, so they skip callers that have
 no past. An attacker using a freshly created key, or a key that was never used
 before, would slip past both. This rule closes that gap.
 
+
 ## How it works
 1. Build a list of all callers seen before the detection window.
 2. Look at activity inside the detection window.
