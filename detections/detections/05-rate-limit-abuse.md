@@ -7,6 +7,7 @@ HTTP status 429 (too many requests). A burst of 429 responses from one source
 suggests an automated attack, such as a script flooding the chatbot, trying
 many stolen keys, or trying to exhaust the service.
 
+
 ## How it works
 1. Keep only events where the status code is 429.
 2. Group them by source IP into 5-minute time buckets.
