@@ -5,6 +5,7 @@ A caller using far more tokens per request than its own normal level. Stolen
 or abused API keys are often used to run large volumes of requests, which
 shows up as a sudden jump in token usage.
 
+
 ## How it works
 1. Build a baseline: the average tokens per request for each caller, using
    activity before the detection window.
