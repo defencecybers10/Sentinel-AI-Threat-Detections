@@ -2,6 +2,7 @@
 // Detects several prompt injection attempts from one IP in a short time.
 // All data below is simulated. Users and IPs are fictional.
 
+
 let AIUsage = datatable(TimeGenerated:datetime, CallerId:string, SourceIP:string, Country:string, FilterResult:string, TotalTokens:int, StatusCode:int)
 [
     datetime(2026-11-10 10:05:00), "user1",   "198.51.100.10", "IN", "None",            850,   200,
