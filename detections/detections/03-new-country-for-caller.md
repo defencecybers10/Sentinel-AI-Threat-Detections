@@ -1,5 +1,6 @@
 # Rule 3: New Country for a Caller
 
+
 ## What it detects
 A caller making requests from a country it has never used before. If a service
 key or user account suddenly appears from a new country, the credential may have
