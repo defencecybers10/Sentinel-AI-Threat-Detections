@@ -6,6 +6,7 @@ prompt injection attempts, a token usage spike, and a request from a country the
 caller has never used. Each signal alone is common and noisy. All three from the
 same source is a high-confidence sign of a stolen credential being abused.
 
+
 ## How it works
 1. Signal 1 (Rule 1): 3 or more prompt injection events from one caller and IP
    in a 10-minute bucket.
