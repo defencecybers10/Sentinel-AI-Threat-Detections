@@ -31,13 +31,16 @@ category names and numbers can change between versions.)
 
 ## Simulated attack
 The service key "key-svc" normally averages about 910 tokens per request from
-198.51.100.20. At 14:20 to 14:22 it is used from 203.0.113.50 with requests of
-18,000 to 19,000 tokens.
+198.51.100.20. From 14:02 it is used from 203.0.113.50: six small prompt
+injection requests, then three very large requests (18,000 to 19,000 tokens)
+at 14:20 to 14:22.
 
 ## Expected result
-One row for key-svc from 203.0.113.50, with a current average of about 18,500
-tokens against a baseline of about 910. Regular users do not appear because
-they have no activity in the detection window.
+One row for key-svc from 203.0.113.50 with 9 requests, a current average of
+about 6,369 tokens against a baseline of about 910. The average is pulled down
+by the six small injection requests, so it clears the 5x threshold (4,550) with
+less margin than the three large requests alone would suggest. Regular users do
+not appear because they have no activity in the detection window.
 
 ## False positives
 - Batch jobs, such as summarising a large set of documents
