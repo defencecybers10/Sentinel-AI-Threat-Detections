@@ -3,6 +3,7 @@
 // This rule uses its own small dataset. All data is simulated.
 // Users, callers, and IPs are fictional.
 
+
 let AIUsage = datatable(TimeGenerated:datetime, CallerId:string, SourceIP:string, Country:string, FilterResult:string, TotalTokens:int, StatusCode:int)
 [
     datetime(2026-11-10 14:50:00), "user1",   "198.51.100.10", "IN", "None", 850, 200,
