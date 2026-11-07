@@ -1,0 +1,30 @@
+// Rule 6: New caller
+// Detects a caller that has no earlier history and then sends several requests.
+// Covers the gap in Rules 2 and 3, which skip callers without a baseline.
+// All data below is simulated. Users, callers, and IPs are fictional.
+
+let AIUsage = datatable(TimeGenerated:datetime, CallerId:string, SourceIP:string, Country:string, FilterResult:string, TotalTokens:int, StatusCode:int)
+[
+    datetime(2026-11-10 09:00:00), "key-svc", "198.51.100.20", "IN", "None", 900,  200,
+    datetime(2026-11-10 10:05:00), "user1",   "198.51.100.10", "IN", "None", 850,  200,
+    datetime(2026-11-10 10:12:00), "user2",   "198.51.100.11", "IN", "None", 920,  200,
+    datetime(2026-11-10 10:31:00), "user3",   "198.51.100.12", "IN", "None", 1010, 200,
+    datetime(2026-11-10 15:30:00), "key-new", "203.0.113.88",  "NL", "None", 4200, 200,
+    datetime(2026-11-10 15:31:00), "key-new", "203.0.113.88",  "NL", "None", 4200, 200,
+    datetime(2026-11-10 15:32:00), "key-new", "203.0.113.88",  "NL", "None", 4200, 200,
+    datetime(2026-11-10 15:33:00), "key-new", "203.0.113.88",  "NL", "None", 4200, 200,
+    datetime(2026-11-10 15:34:00), "key-new", "203.0.113.88",  "NL", "None", 4200, 200,
+    datetime(2026-11-10 15:40:00), "user4",   "198.51.100.13", "IN", "None", 800,  200,
+    datetime(2026-11-10 15:45:00), "user1",   "198.51.100.10", "IN", "None", 860,  200
+];
+let detectStart = datetime(2026-11-10 13:00:00); // in a real workspace: ago(1h)
+let minRequests = 3;
+let knownCallers = AIUsage
+    | where TimeGenerated < detectStart
+    | distinct CallerId;
+AIUsage
+| where TimeGenerated >= detectStart
+| join kind=leftanti knownCallers on CallerId
+| summarize Requests = count(), TotalTokens = sum(TotalTokens), FirstSeen = min(TimeGenerated),
+    IPs = make_set(SourceIP), Countries = make_set(Country) by CallerId
+| where Requests >= minRequests
