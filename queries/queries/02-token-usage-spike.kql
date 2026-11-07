@@ -2,7 +2,6 @@
 // Detects a caller using far more tokens than its own normal baseline.
 // All data below is simulated. Users and IPs are fictional.
 
-
 let AIUsage = datatable(TimeGenerated:datetime, CallerId:string, SourceIP:string, Country:string, FilterResult:string, TotalTokens:int, StatusCode:int)
 [
     datetime(2026-11-10 09:00:00), "key-svc", "198.51.100.20", "IN", "None",            900,   200,
