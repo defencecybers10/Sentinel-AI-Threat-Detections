@@ -1,0 +1,27 @@
+// Rule 1: Prompt injection burst
+// Detects several prompt injection attempts from one IP in a short time.
+// All data below is simulated. Users and IPs are fictional.
+
+let AIUsage = datatable(TimeGenerated:datetime, CallerId:string, SourceIP:string, Country:string, FilterResult:string, TotalTokens:int, StatusCode:int)
+[
+    datetime(2026-11-10 10:05:00), "user1",   "198.51.100.10", "IN", "None",            850,   200,
+    datetime(2026-11-10 10:12:00), "user2",   "198.51.100.11", "IN", "None",            920,   200,
+    datetime(2026-11-10 10:31:00), "user3",   "198.51.100.12", "IN", "None",            1010,  200,
+    datetime(2026-11-10 11:15:00), "user2",   "198.51.100.11", "IN", "PromptInjection", 400,   200,
+    datetime(2026-11-10 14:02:00), "key-svc", "203.0.113.50",  "NL", "PromptInjection", 300,   200,
+    datetime(2026-11-10 14:03:00), "key-svc", "203.0.113.50",  "NL", "PromptInjection", 310,   200,
+    datetime(2026-11-10 14:04:00), "key-svc", "203.0.113.50",  "NL", "PromptInjection", 290,   200,
+    datetime(2026-11-10 14:05:00), "key-svc", "203.0.113.50",  "NL", "PromptInjection", 305,   200,
+    datetime(2026-11-10 14:07:00), "key-svc", "203.0.113.50",  "NL", "PromptInjection", 315,   200,
+    datetime(2026-11-10 14:08:00), "key-svc", "203.0.113.50",  "NL", "PromptInjection", 300,   200,
+    datetime(2026-11-10 14:20:00), "key-svc", "203.0.113.50",  "NL", "None",            18000, 200,
+    datetime(2026-11-10 14:21:00), "key-svc", "203.0.113.50",  "NL", "None",            18500, 200,
+    datetime(2026-11-10 14:22:00), "key-svc", "203.0.113.50",  "NL", "None",            19000, 200
+];
+let window = 10m;
+let threshold = 3;
+AIUsage
+| where FilterResult == "PromptInjection"
+| summarize Attempts = count(), FirstSeen = min(TimeGenerated), LastSeen = max(TimeGenerated), Callers = make_set(CallerId)
+    by SourceIP, bin(TimeGenerated, window)
+| where Attempts >= threshold
