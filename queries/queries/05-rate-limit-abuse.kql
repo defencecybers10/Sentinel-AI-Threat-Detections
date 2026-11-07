@@ -1,0 +1,27 @@
+// Rule 5: Rate limit abuse
+// Detects many throttled (HTTP 429) requests from one IP in a short time.
+// This rule uses its own small dataset. All data is simulated.
+// Users, callers, and IPs are fictional.
+
+let AIUsage = datatable(TimeGenerated:datetime, CallerId:string, SourceIP:string, Country:string, FilterResult:string, TotalTokens:int, StatusCode:int)
+[
+    datetime(2026-11-10 14:50:00), "user1",   "198.51.100.10", "IN", "None", 850, 200,
+    datetime(2026-11-10 14:55:00), "user3",   "198.51.100.12", "IN", "None", 900, 200,
+    datetime(2026-11-10 15:00:10), "bot-svc", "203.0.113.77",  "NL", "None", 0,   429,
+    datetime(2026-11-10 15:00:25), "bot-svc", "203.0.113.77",  "NL", "None", 0,   429,
+    datetime(2026-11-10 15:00:40), "bot-svc", "203.0.113.77",  "NL", "None", 0,   429,
+    datetime(2026-11-10 15:01:05), "bot-svc", "203.0.113.77",  "NL", "None", 0,   429,
+    datetime(2026-11-10 15:01:20), "bot-svc", "203.0.113.77",  "NL", "None", 0,   429,
+    datetime(2026-11-10 15:01:50), "bot-svc", "203.0.113.77",  "NL", "None", 0,   429,
+    datetime(2026-11-10 15:02:10), "bot-svc", "203.0.113.77",  "NL", "None", 0,   429,
+    datetime(2026-11-10 15:02:30), "bot-svc", "203.0.113.77",  "NL", "None", 0,   429,
+    datetime(2026-11-10 15:10:00), "user2",   "198.51.100.11", "IN", "None", 0,   429,
+    datetime(2026-11-10 15:10:30), "user2",   "198.51.100.11", "IN", "None", 0,   429
+];
+let window = 5m;
+let threshold = 5;
+AIUsage
+| where StatusCode == 429
+| summarize Throttled = count(), FirstSeen = min(TimeGenerated), LastSeen = max(TimeGenerated),
+    Callers = make_set(CallerId) by SourceIP, bin(TimeGenerated, window)
+| where Throttled >= threshold
