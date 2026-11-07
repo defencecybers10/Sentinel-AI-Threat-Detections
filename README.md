@@ -33,5 +33,5 @@ More detections are planned.
 
 ## Skills shown
 
-KQL, Microsoft Sentinel, detection engineering, alert tuning, threat mapping
-(MITRE ATLAS, OWASP LLM Top 10), detection documentation
+Microsoft Sentinel, KQL, Detection engineering, Alert tuning, Threat mapping
+(MITRE ATLAS, OWASP LLM Top 10), Incident Detection documentation
